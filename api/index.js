@@ -29,6 +29,9 @@ const tenantMiddleware = require('../middleware/tenant');
 
 const app = express();
 
+// Trust Vercel / proxy headers
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 
@@ -70,8 +73,6 @@ const connectDB = async () => {
     console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
     
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
