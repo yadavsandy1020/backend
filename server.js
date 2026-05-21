@@ -38,11 +38,12 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration
+// CORS configuration - allow all origins and support credentials by echoing request origin
 app.use(cors({
-  origin: '*', // Adjust this in production to restrict to specific domains
+  origin: true,
   credentials: true
 }));
+app.options('*', cors({ origin: true, credentials: true }));
 
 // Body parser middleware
 app.use(express.json({ limit: '10mb' }));
