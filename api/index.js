@@ -51,29 +51,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/schools', schoolRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/students', studentRoutes);
-app.use('/api/teachers', teacherRoutes);
-app.use('/api/attendance', attendanceRoutes);
-app.use('/api/fees', feeRoutes);
-app.use('/api/classes', classRoutes);
-app.use('/api/notices', noticeRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/customization', customizationRoutes);
-app.use('/api/admissions', admissionRoutes);
-app.use('/api/timetable', timetableRoutes);
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'School Management API is running' });
-});
-
-// Error handling middleware (must be last)
-app.use(errorHandler);
-
 // Database connection with caching for serverless
 let cachedDb = null;
 
@@ -108,6 +85,29 @@ app.use(async (req, res, next) => {
     res.status(500).json({ error: 'Database connection failed' });
   }
 });
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/schools', schoolRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/students', studentRoutes);
+app.use('/api/teachers', teacherRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/fees', feeRoutes);
+app.use('/api/classes', classRoutes);
+app.use('/api/notices', noticeRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/customization', customizationRoutes);
+app.use('/api/admissions', admissionRoutes);
+app.use('/api/timetable', timetableRoutes);
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'School Management API is running' });
+});
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
 
 // Export for Vercel serverless
 module.exports = app;
