@@ -56,10 +56,14 @@ let cachedDb = null;
 
 const connectDB = async () => {
   if (cachedDb) {
+    console.log('Using cached database connection');
     return cachedDb;
   }
 
   try {
+    console.log('Attempting to connect to MongoDB...');
+    console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+    
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -70,7 +74,9 @@ const connectDB = async () => {
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     return conn;
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.error(`MongoDB Connection Error: ${error.name} - ${error.message}`);
+    console.error(`Error Code: ${error.code}`);
+    console.error(`Full Error:`, error);
     throw error;
   }
 };
