@@ -2,10 +2,15 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Create uploads directory if it doesn't exist
+// Create uploads directory if it doesn't exist (with error handling for serverless)
 const uploadDir = './uploads';
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (error) {
+  console.warn('Could not create uploads directory (might be serverless environment):', error.message);
+  // Continue anyway - directory creation error is not fatal
 }
 
 // Storage configuration
@@ -13,10 +18,15 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const subfolder = req.body.folder || 'general';
     const dir = path.join(uploadDir, subfolder);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    try {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      cb(null, dir);
+    } catch (error) {
+      console.error('Could not create upload subdirectory:', error);
+      cb(error);
     }
-    cb(null, dir);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
